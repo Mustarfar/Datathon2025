@@ -1,6 +1,14 @@
 import re
 import spacy
 from fuzzywuzzy import fuzz
+from collections import Counter
+import networkx as nx
+import matplotlib
+# matplotlib.use('Qt5Agg')
+import matplotlib.pyplot as plt
+plt.ion()
+
+
 
 # Load NLP model
 nlp = spacy.load("en_core_web_sm")
@@ -67,3 +75,31 @@ merged_entities = merge_entities(entities)
 print(merged_entities)
 print()
 
+def entity_frequencies(entities):
+    """Count entity occurrences."""
+    counts = Counter([ent[0] for ent in entities])
+    return counts.most_common()
+
+print("Function 5:")
+print(entity_frequencies(entities))
+print()
+
+def draw_network_graph(relationships):
+    """Create a network graph from extracted relationships."""
+    G = nx.Graph()
+    
+    for subj, verb, obj in relationships:
+        if obj:  # Avoid empty objects
+            G.add_edge(subj, obj, label=verb)
+
+    plt.figure(figsize=(8, 6))
+    pos = nx.spring_layout(G)
+    labels = nx.get_edge_attributes(G, 'label')
+    nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color="gray")
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+    plt.show()
+
+
+print("Function 6:")
+# draw_network_graph(relations)
+print()
