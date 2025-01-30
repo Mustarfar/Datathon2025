@@ -1,11 +1,12 @@
 import re
 import spacy
-import fuzzywuzzy import fuzz
+from fuzzywuzzy import fuzz
+
 # Load NLP model
 nlp = spacy.load("en_core_web_sm")
 
 def preprocess_text(text):
-    """Clean and preprocess input text."""
+    # """Clean and preprocess input text."""
     text = text.lower()  # Convert to lowercase
     text = re.sub(r'\s+', ' ', text)  # Remove extra spaces
     text = re.sub(r'\[.*?\]|\(.*?\)|[^a-zA-Z0-9\s]', '', text)  # Remove special chars
@@ -13,23 +14,27 @@ def preprocess_text(text):
 
 sample_text = "Elon Musk is the CEO of Tesla and SpaceX. He founded Neuralink."
 cleaned_text = preprocess_text(sample_text)
+print("Function 1:")
 print(cleaned_text)
+print()
 
 # Process with NLP model
 doc = nlp(cleaned_text)
 
 
 def extract_entities(text):
-    """Extract named entities from text."""
+    # """Extract named entities from text."""
     doc = nlp(text)
     entities = [(ent.text, ent.label_) for ent in doc.ents]
     return entities
 
 entities = extract_entities(cleaned_text)
+print("Function 2:")
 print(entities)
+print()
 
 def extract_relationships(text):
-    """Extract relationships between entities using dependency parsing."""
+    # """Extract relationships between entities using dependency parsing."""
     doc = nlp(text)
     relationships = []
 
@@ -44,12 +49,12 @@ def extract_relationships(text):
     return relationships
 
 relations = extract_relationships(cleaned_text)
+print("Function 3:")
 print(relations)
-
-      from fuzzywuzzy import fuzz
+print()
 
 def merge_entities(entities):
-    """Merge entities with similar names."""
+    # """Merge entities with similar names."""
     merged = []
     for ent1 in entities:
         for ent2 in entities:
@@ -57,6 +62,8 @@ def merge_entities(entities):
                 merged.append((ent1[0], ent2[1]))  # Keep first entity
     return list(set(merged))
 
+print("Function 4:")
 merged_entities = merge_entities(entities)
 print(merged_entities)
+print()
 
