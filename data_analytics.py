@@ -6,21 +6,25 @@ import networkx as nx
 import matplotlib
 # matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
+import torch
 plt.ion()
 
 
 
 # Load NLP model
-nlp = spacy.load("en_core_web_sm")
+# nlp = spacy.load("en_core_web_sm")
+nlp = spacy.load("en_core_web_trf")  # or "en_core_web_trf" for transformer-based parsing
+
 
 def preprocess_text(text):
     # """Clean and preprocess input text."""
     text = text.lower()  # Convert to lowercase
     text = re.sub(r'\s+', ' ', text)  # Remove extra spaces
-    text = re.sub(r'\[.*?\]|\(.*?\)|[^a-zA-Z0-9\s]', '', text)  # Remove special chars
+    text = re.sub(r'[^a-zA-Z0-9\s\[\]\(\)]', '', text)
+    # text = re.sub(r'\[.*?\]|\(.*?\)|[^a-zA-Z0-9\s]', '', text)  # Remove special chars
     return text
 
-sample_text = "Elon Musk is the CEO of Tesla and SpaceX. He founded Neuralink."
+sample_text = "The first suspect to plead guilty in Singapore's largest money laundering case was convicted and sentenced to 13 months' jail in a district court on Tuesday (Apr 2).Su Wenqiang, 32, admitted to 11 charges of money laundering, possessing proceeds from illegal remote gambling offences and lying to get work passes for himself and his wife. More than S$3 billion (US$2.2 billion) in assets have been seized or frozen in relation to the case. This likely makes it one of the largest money laundering operations in the world.Su was among 10 suspects arrested in simultaneous police raids last August. The Cambodian national, whose passport states that he is from Fujian, was nabbed in a Good Class Bungalow along Lewis Road in Bukit Timah."
 cleaned_text = preprocess_text(sample_text)
 print("Function 1:")
 print(cleaned_text)
@@ -98,6 +102,11 @@ def draw_network_graph(relationships):
     nx.draw(G, pos, with_labels=True, node_color="lightblue", edge_color="gray")
     nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
     plt.show()
+
+
+print("Function 6:")
+# draw_network_graph(relations)
+print()
 
 
 print("Function 6:")
