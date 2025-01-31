@@ -8,9 +8,6 @@ import matplotlib
 import matplotlib.pyplot as plt
 import torch
 from spacy.lang.en.stop_words import STOP_WORDS
-plt.ion()
-
-
 
 # Load NLP model
 # nlp = spacy.load("en_core_web_sm")
@@ -23,26 +20,11 @@ def preprocess_text(text):
     text = re.sub(r'[^a-zA-Z0-9\s\[\]\(\)]', '', text)  
     return text
 
-sample_text = "The first suspect to plead guilty in Singapore's largest money laundering case was convicted and sentenced to 13 months' jail in a district court on Tuesday (Apr 2). Su Wenqiang, 32, admitted to 11 charges of money laundering, possessing proceeds from illegal remote gambling offences and lying to get work passes for himself and his wife. More than S$3 billion (US$2.2 billion) in assets have been seized or frozen in relation to the case. This likely makes it one of the largest money laundering operations in the world. Su was among 10 suspects arrested in simultaneous police raids last August. The Cambodian national, whose passport states that he is from Fujian, was nabbed in a Good Class Bungalow along Lewis Road in Bukit Timah."
-cleaned_text = preprocess_text(sample_text)
-print("Function 1:")
-print(cleaned_text)
-print()
-
-# Process with NLP model
-doc = nlp(cleaned_text)
-
-
 def extract_entities(text):
     # """Extract named entities from text."""
     doc = nlp(text)
     entities = [(ent.text, ent.label_) for ent in doc.ents]
     return entities
-
-entities = extract_entities(cleaned_text)
-print("Function 2:")
-print(entities)
-print()
 
 def extract_relationships(text):
     """Enhanced extraction of relationships between entities using dependency parsing."""
@@ -82,16 +64,10 @@ def filter_low_freq_relationships(relationships, min_freq=2):
     freq = Counter(relationships)
     
     if all(count < min_freq for count in freq.values()):  # Prevent blank graphs
-        print("⚠️ Warning: No relationships meet the minimum frequency threshold. Lowering min_freq to 1.")
+        print("⚠️ Warning: No relationships meet the minimum frequency threshold. Lowering min_freq to 1.") # can remove for aesthetic reasons
         min_freq = 1
     
     return [rel for rel in relationships if freq[rel] >= min_freq]
-
-relations = filter_low_freq_relationships(extract_relationships(sample_text), min_freq=2)
-
-print("Function 3:")
-print(relations)
-print()
 
 def merge_entities(entities):
     # """Merge entities with similar names."""
@@ -102,19 +78,10 @@ def merge_entities(entities):
                 merged.append((ent1[0], ent2[1]))  # Keep first entity
     return list(set(merged))
 
-print("Function 4:")
-merged_entities = merge_entities(entities)
-print(merged_entities)
-print()
-
 def entity_frequencies(entities):
     """Count entity occurrences."""
     counts = Counter([ent[0] for ent in entities])
     return counts.most_common()
-
-print("Function 5:")
-print(entity_frequencies(entities))
-print()
 
 def draw_network_graph(relationships):
     """Create a cleaner and more readable network graph."""
@@ -141,11 +108,34 @@ def draw_network_graph(relationships):
 
     plt.show()
 
-print("Function 6:")
-draw_network_graph(relations)
+
+sample_text = "The first suspect to plead guilty in Singapore's largest money laundering case was convicted and sentenced to 13 months' jail in a district court on Tuesday (Apr 2). Su Wenqiang, 32, admitted to 11 charges of money laundering, possessing proceeds from illegal remote gambling offences and lying to get work passes for himself and his wife. More than S$3 billion (US$2.2 billion) in assets have been seized or frozen in relation to the case. This likely makes it one of the largest money laundering operations in the world. Su was among 10 suspects arrested in simultaneous police raids last August. The Cambodian national, whose passport states that he is from Fujian, was nabbed in a Good Class Bungalow along Lewis Road in Bukit Timah."
+
+cleaned_text = preprocess_text(sample_text)
+print("Pre-processing Function:")
+print(cleaned_text)
 print()
 
+# Process with NLP model
+entities = extract_entities(cleaned_text)
+print("Entity Extraction Function:")
+print(entities)
+print()
 
-print("Function 6:")
+relations = filter_low_freq_relationships(extract_relationships(sample_text), min_freq=2)
+print("Relationship Extractor Function:")
+print(relations)
+print()
+
+print("Entity Merging Function:")
+merged_entities = merge_entities(entities)
+print(merged_entities)
+print()
+
+print("Entity Frequency Function:")
+print(entity_frequencies(entities))
+print()
+
+print("Drawing of Graphs:")
 draw_network_graph(relations)
 print()
